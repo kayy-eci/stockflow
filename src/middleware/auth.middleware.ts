@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import type { UserTokenPayload } from "../types/express.js";
+import type { UserTokenPayload } from "../types/express.ts";
 
 const SECRET = process.env.JWT_SECRET;
 
