@@ -1,11 +1,15 @@
 import express, { type Express } from 'express';
 import cors from "cors";
 import { pool } from "./config/db.ts";
+import routes from "./routes/index.ts";
 
 
 const app: Express = express();
 
 app.use(cors());
+app.use(express.json());
+
+app.use("/api", routes);
 
 
 app.get("/health", async (req, res) => {
