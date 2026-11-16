@@ -4,7 +4,7 @@ export type UserRole = "staff" | "owner";
 
 export interface UserTokenPayload extends JwtPayload {
     id: number,
-    emai: string,
+    email: string,
     role?: UserRole,
     jti?: string
 };
