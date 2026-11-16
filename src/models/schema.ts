@@ -33,6 +33,11 @@ export const UserResponseSchema = z.object({
   updated_at: z.date(),
 });
 
+export const Credetials = z.object({
+    email: z.string().email(),
+    password: z.string().min(8),
+})
+
 export const CreateCategorySchema = z.object({
   name: z.string().min(1).max(100),
 });

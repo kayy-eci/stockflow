@@ -1,11 +1,11 @@
 import { Router, type Request, type Response } from "express";
 import { ZodError } from "zod";
-// import { dataUsers, credetials } from "../models/schema.ts";
+import { CreateUserSchema, Credetials } from "../models/schema.ts";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { randomUUID } from "crypto";
+import * as userService from "../services/users.service.ts";
 import { tokenMiddleWare } from "../middleware/auth.middleware.ts";
-// import * as userService from "../services/user.service.ts";
 
 const router = Router();
 
@@ -30,3 +30,4 @@ router.get("/users", tokenMiddleWare, async (req: Request, res: Response) => {
     });
   }
 });
+
