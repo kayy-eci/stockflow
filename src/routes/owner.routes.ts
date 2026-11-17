@@ -6,9 +6,11 @@ import {
     UpdateCategorySchema,
     CreateProductSchema,
     UpdateProductSchema,
+    CreateStockAdjustmentSchema,
 } from "../models/schema.ts";
 import * as categoriesService from "../services/categories.service.ts";
 import * as productsService from "../services/products.service.ts";
+import * as stockAdjustmentsService from "../services/stockAdjustments.service.ts";
 
 const router = Router();
 
@@ -133,6 +135,37 @@ router.patch("/products/:id/deactivate", async (req, res) => {
     } catch (error) {
         console.error("Deactivate product error:", error);
         res.status(500).json({ message: "Gagal menonaktifkan produk" });
+    }
+});
+
+router.get("/products/:id/adjustments", async (req, res) => {
+    try {
+        const data = await stockAdjustmentsService.getAdjustmentsByProduct(Number(req.params.id));
+        res.status(200).json({ message: "Berhasil fetch riwayat adjustment!", data });
+    } catch (error) {
+        console.error("Get adjustments error:", error);
+        res.status(500).json({ message: "Gagal mengambil riwayat adjustment" });
+    }
+});
+
+router.post("/stock-adjustments", async (req, res) => {
+    const parsed = CreateStockAdjustmentSchema.safeParse(req.body);
+    if (!parsed.success) {
+        res.status(400).json({
+            message: "Data stock adjustment tidak valid",
+            errors: parsed.error.flatten(),
+        });
+        return;
+    }
+
+    try {
+        const ownerId = res.locals.user!.id;
+        const data = await stockAdjustmentsService.createStockAdjustment(ownerId, parsed.data);
+        res.status(201).json({ message: "Berhasil menyesuaikan stok!", data });
+    } catch (error) {
+        console.error("Create stock adjustment error:", error);
+        const msg = error instanceof Error ? error.message : "Gagal menyesuaikan stok";
+        res.status(400).json({ message: msg });
     }
 });
 
