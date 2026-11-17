@@ -11,6 +11,7 @@ import {
 import * as categoriesService from "../services/categories.service.ts";
 import * as productsService from "../services/products.service.ts";
 import * as stockAdjustmentsService from "../services/stockAdjustments.service.ts";
+import * as reportsService from "../services/reports.service.ts";
 
 const router = Router();
 
@@ -166,6 +167,64 @@ router.post("/stock-adjustments", async (req, res) => {
         console.error("Create stock adjustment error:", error);
         const msg = error instanceof Error ? error.message : "Gagal menyesuaikan stok";
         res.status(400).json({ message: msg });
+    }
+});
+
+router.get("/reports/revenue", async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        if (!start || !end) {
+            res.status(400).json({ message: "Parameter start dan end wajib diisi" });
+            return;
+        }
+
+        const data = await reportsService.getRevenueSummary(String(start), String(end));
+        res.status(200).json({ message: "Berhasil fetch laporan revenue!", data });
+    } catch (error) {
+        console.error("Get revenue report error:", error);
+        res.status(500).json({ message: "Gagal mengambil laporan revenue" });
+    }
+});
+
+router.get("/reports/top-products", async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        if (!start || !end) {
+            res.status(400).json({ message: "Parameter start dan end wajib diisi" });
+            return;
+        }
+
+        const data = await reportsService.getTopProducts(String(start), String(end), 10);
+        res.status(200).json({ message: "Berhasil fetch produk terlaris!", data });
+    } catch (error) {
+        console.error("Get top products error:", error);
+        res.status(500).json({ message: "Gagal mengambil data produk terlaris" });
+    }
+});
+
+router.get("/reports/margin", async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        if (!start || !end) {
+            res.status(400).json({ message: "Parameter start dan end wajib diisi" });
+            return;
+        }
+
+        const data = await reportsService.getMarginReport(String(start), String(end));
+        res.status(200).json({ message: "Berhasil fetch laporan margin!", data });
+    } catch (error) {
+        console.error("Get margin report error:", error);
+        res.status(500).json({ message: "Gagal mengambil laporan margin" });
+    }
+});
+
+router.get("/reports/low-stock", async (req, res) => {
+    try {
+        const data = await reportsService.getLowStockProducts();
+        res.status(200).json({ message: "Berhasil fetch produk stok menipis!", data });
+    } catch (error) {
+        console.error("Get low stock error:", error);
+        res.status(500).json({ message: "Gagal mengambil data stok menipis" });
     }
 });
 
