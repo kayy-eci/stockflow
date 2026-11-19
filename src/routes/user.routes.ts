@@ -38,7 +38,7 @@ router.get("/users", tokenMiddleWare, async (req: Request, res: Response) => {
   }
 });
 
-router.post("/users", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   const parsed = CreateUserSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({
